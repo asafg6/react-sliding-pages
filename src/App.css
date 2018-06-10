@@ -1,0 +1,14 @@
+.App {
+  text-align: center;
+}
+
+.page {
+  width: 300px;
+  height: 100%;
+  min-height: 5em;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 5em;
+  padding: 2em;
+  z-index: 15000;
+}

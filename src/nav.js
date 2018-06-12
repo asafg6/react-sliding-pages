@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+const hash = () => window.location.hash.slice(1);
 
 class Nav extends Component {
 
@@ -11,8 +12,7 @@ class Nav extends Component {
             left[0] = 0;
         }
         this.state = {page: 0, left: left};
-        this.navButtons = props.buttons;
-        
+        this.pages = {};
     }
 
     move(page) {
@@ -31,25 +31,29 @@ class Nav extends Component {
         }    
         this.setState({left: left, page: page})
       }
+      
+    componentDidMount() {
+        this.move(this.pages[hash()]);
+    }
+
+    componentWillMount() {
+        window.onhashchange = (e) => {
+            const i = e.newURL.indexOf('#');
+            const hash = e.newURL.slice(i + 1);
+            console.log(hash);
+            this.move(this.pages[hash]);
+        };
+    }
 
     render() {
-        const pageElements = React.Children.map(this.props.children, (page, idx) =>
-            React.cloneElement(page, { left: this.state.left[idx] })); 
-        console.log(this.props.buttons);
-        const buttonElements = React.Children.map(this.props.buttons, (button, idx) => {
-            console.log(idx);
-            let newButton = React.cloneElement(button , { onClick: () => this.move(idx), ...button.props});
-            return newButton;
-        });
-        console.log(buttonElements);
+        const pageElements = React.Children.map(this.props.children, (page, idx) => {
+            const element = React.cloneElement(page, { left: this.state.left[idx] }); 
+            this.pages[element.props.path.slice(1)] = idx;
+            return element;
+        })
         return (
             <div>
-                <div>
-                    {buttonElements}
-                </div>
-                <div>
-                    {pageElements}
-                </div>
+                {pageElements}
             </div>
         );
     }

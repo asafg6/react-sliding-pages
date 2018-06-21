@@ -11,25 +11,27 @@ class Nav extends Component {
         if (left.length > 0 ) {
             left[0] = 0;
         }
-        this.state = {page: 0, left: left};
+        this.state = {page: 0, left: left, from: left};
         this.pages = {};
+        this.eventer = new Eventer();
     }
 
     move(page) {
         const left = this.state.left.slice();
+        const from = left.slice();
         if (page >= left.length) {
           page = 0;
         }
         for (let i = 0; i < left.length; i++ ) {
           if (i < page) {
             left[i] = -this.width;
-          } else if (i == page) {
+          } else if (i === page) {
             left[i] = 0;
           } else {
             left[i] = this.width;
           }
         }    
-        this.setState({left: left, page: page})
+        this.setState({left: left, page: page, from: from})
       }
       
     componentDidMount() {
@@ -42,15 +44,17 @@ class Nav extends Component {
             const hash = e.newURL.slice(i + 1);
             console.log(hash);
             this.move(this.pages[hash]);
+            this.eventer.fire({'param': 1});
         };
     }
 
+
     render() {
         const pageElements = React.Children.map(this.props.children, (page, idx) => {
-            const element = React.cloneElement(page, { left: this.state.left[idx] }); 
+            const element = React.cloneElement(page, { left: this.state.left[idx], from: this.state.from[idx], eventer:this.eventer }); 
             this.pages[element.props.path.slice(1)] = idx;
             return element;
-        })
+        });
         return (
             <div>
                 {pageElements}
@@ -60,4 +64,29 @@ class Nav extends Component {
 
 }
 
+
+class Eventer {
+
+    constructor() {
+        this.listeners = [];
+    }
+
+    register(f) {
+        this.listeners.push(f);
+    }
+
+    unregister(f) {
+        this.listeners.splice(this.listeners.indexOf(f), 1);
+        console.log(this.listeners);
+    }
+
+    fire(params) {
+        this.listeners.forEach((listener) => {
+            listener(params);
+        });
+
+    }
+}
+
 export default Nav;
+

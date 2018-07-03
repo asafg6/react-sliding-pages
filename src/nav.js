@@ -13,7 +13,7 @@ class Nav extends Component {
         }
         this.state = {page: 0, left: left, from: left};
         this.pages = {};
-        this.eventer = new Eventer();
+        this.eventer = new MoveEvent();
     }
 
     move(page) {
@@ -44,7 +44,7 @@ class Nav extends Component {
             const hash = e.newURL.slice(i + 1);
             console.log(hash);
             this.move(this.pages[hash]);
-            this.eventer.fire({'param': 1});
+            this.eventer.fire();
         };
     }
 
@@ -65,7 +65,7 @@ class Nav extends Component {
 }
 
 
-class Eventer {
+class MoveEvent {
 
     constructor() {
         this.listeners = [];

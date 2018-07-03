@@ -30,7 +30,7 @@ class Page extends Component {
         return true;
     }
 
-    move(params) {
+    move() {
         if (this.props.left !== this.props.from) {
             this.setState({ shouldRenderChildren: true });
         }

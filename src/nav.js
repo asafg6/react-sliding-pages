@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-const hash = () => window.location.hash.slice(1);
 
 class Nav extends Component {
 
@@ -31,18 +30,18 @@ class Nav extends Component {
             left[i] = this.width;
           }
         }    
-        this.setState({left: left, page: page, from: from})
+        this.setState({left: left, page: page, from: from});
+        this.eventer.fire();
       }
       
     componentDidMount() {
-        this.move(this.pages[hash()]);
+        this.move(this.pages[window.location.hash.slice(1)]);
     }
 
     componentWillMount() {
         window.onhashchange = (e) => {
             const i = e.newURL.indexOf('#');
             const hash = e.newURL.slice(i + 1);
-            console.log(hash);
             this.move(this.pages[hash]);
             this.eventer.fire();
         };
@@ -77,7 +76,6 @@ class MoveEvent {
 
     unregister(f) {
         this.listeners.splice(this.listeners.indexOf(f), 1);
-        console.log(this.listeners);
     }
 
     fire(params) {

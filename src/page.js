@@ -16,8 +16,8 @@ class Page extends Component {
         this.props.eventer.register(() => this.move());
     }
 
-    componentWil() {
-        this.props.eventer.unregister(this.move);
+    componentWillUnmount() {
+        this.props.eventer.unregister(() => this.move());
     }
 
     isVisible() {
@@ -34,10 +34,10 @@ class Page extends Component {
         if (this.props.left !== this.props.from) {
             this.setState({ shouldRenderChildren: true });
         }
-        this.reRenderIfInvisible();
+        this.reRender();
     }
 
-    async reRenderIfInvisible() {
+    async reRender() {
         await sleep(1000);
         this.setState({shouldRenderChildren: this.isVisible()});
     }
